@@ -1,1 +1,1 @@
-# CursedProject
+# CurseProject
