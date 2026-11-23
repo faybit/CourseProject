@@ -1,0 +1,106 @@
+﻿<Window x:Class="RecipeBook.Views.RecipeEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Рецепт" Height="720" Width="700"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="16">
+        <ScrollViewer>
+            <StackPanel>
+                <TextBlock Text="Название" />
+                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,12" />
+
+                <TextBlock Text="Описание" />
+                <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Height="60"
+                         TextWrapping="Wrap" AcceptsReturn="True" Margin="0,4,0,12" />
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                    <StackPanel Margin="0,0,16,0">
+                        <TextBlock Text="Время приготовления, мин" />
+                        <TextBox Text="{Binding CookinTimeText, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="160" Margin="0,4,0,0" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Порций" />
+                        <TextBox Text="{Binding ServingsText, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="100" Margin="0,4,0,0" />
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Text="Сложность" />
+                <ComboBox ItemsSource="{Binding Difficulties}" DisplayMemberPath="DifficultyName"
+                          SelectedItem="{Binding SelectedDifficulty}" Width="220"
+                          HorizontalAlignment="Left" Margin="0,4,0,12" />
+
+                <TextBlock Text="Категории" />
+                <ScrollViewer Height="110" Margin="0,4,0,12">
+                    <ItemsControl ItemsSource="{Binding CategoryChecks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox Content="{Binding Category.CategoryName}"
+                                          IsChecked="{Binding IsChecked}" Margin="0,2" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <TextBlock Text="Ингредиенты" FontSize="16" FontWeight="SemiBold" />
+                <StackPanel Orientation="Horizontal" Margin="0,4,0,2">
+                    <TextBlock Text="Ингредиент" Width="240" Foreground="Gray" />
+                    <TextBlock Text="Количество" Width="88" Foreground="Gray" />
+                    <TextBlock Text="Единица" Width="88" Foreground="Gray" />
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding IngredientRows}" Margin="0,4,0,4">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0,2">
+                                <ComboBox ItemsSource="{Binding DataContext.Ingredients,
+                                          RelativeSource={RelativeSource AncestorType=Window}}"
+                                          DisplayMemberPath="IngredientName"
+                                          SelectedItem="{Binding SelectedIngredient}" Width="240" />
+                                <TextBox Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged}"
+                                         Width="80" Margin="8,0,0,0" ToolTip="Количество, например 300"/>
+                                <TextBox Text="{Binding Unit, UpdateSourceTrigger=PropertyChanged}"
+                                         Width="80" Margin="8,0,0,0" ToolTip="Единица измерения: г, шт, мл"/>
+                                <Button Content="Убрать" Margin="8,0,0,0" Width="70"
+                                        Command="{Binding DataContext.RemoveIngredientCommand,
+                                        RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Content="+ Ингредиент" Command="{Binding AddIngredientCommand}" Width="140"
+                        HorizontalAlignment="Left" Margin="0,0,0,12" />
+
+                <TextBlock Text="Шаги приготовления" FontSize="16" FontWeight="SemiBold" />
+                <ItemsControl ItemsSource="{Binding StepRows}" Margin="0,4,0,4">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0,2">
+                                <TextBox Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" Width="480" />
+                                <Button Content="Убрать" Margin="8,0,0,0" Width="70"
+                                        Command="{Binding DataContext.RemoveStepCommand,
+                                        RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Content="+ Шаг" Command="{Binding AddStepCommand}" Width="140"
+                        HorizontalAlignment="Left" Margin="0,0,0,12" />
+
+                <Button Content="{Binding ImageButtonText}" Command="{Binding ChooseImageCommand}"
+                        Width="260" HorizontalAlignment="Left" Margin="0,0,0,12" />
+
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Content="Сохранить" Command="{Binding SaveCommand}" Width="140"
+                            Height="32" Margin="0,0,8,0" />
+                    <Button Content="Отмена" Click="Cancel_Click" Width="120" Height="32" />
+                </StackPanel>
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="Crimson"
+                           TextWrapping="Wrap" Margin="0,8,0,0" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

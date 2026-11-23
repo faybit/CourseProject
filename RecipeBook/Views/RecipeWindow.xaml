@@ -1,0 +1,113 @@
+﻿<Window x:Class="RecipeBook.Views.RecipeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="clr-namespace:RecipeBook.Converters"
+        Title="Рецепт" Height="700" Width="800"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <conv:ImagePathConverter x:Key="ImgConv" />
+        <conv:NotEmptyToVisibilityConverter x:Key="NotEmptyVis" />
+    </Window.Resources>
+    <Grid Margin="16">
+        <ScrollViewer>
+            <StackPanel>
+                <Image Source="{Binding Recipe.ImagePath, Converter={StaticResource ImgConv}}"
+                       Visibility="{Binding Recipe.ImagePath, Converter={StaticResource NotEmptyVis}}"
+                       Height="220" Stretch="UniformToFill" Margin="0,0,0,12" />
+                <TextBlock Text="{Binding Recipe.Title}" FontSize="26" FontWeight="Bold"
+                           TextWrapping="Wrap" />
+                <TextBlock Margin="0,4,0,12" Foreground="Gray">
+                    <Run Text="{Binding Recipe.Difficulty.DifficultyName, Mode=OneWay}" />
+                    <Run Text=" · " />
+                    <Run Text="{Binding Recipe.CookinTime, Mode=OneWay, StringFormat={}{0} мин}" />
+                    <Run Text=" · " />
+                    <Run Text="{Binding Recipe.Servings, Mode=OneWay, StringFormat={}{0} порций}" />
+                    <Run Text=" · Автор: " />
+                    <Run Text="{Binding Recipe.Author.DisplayName, Mode=OneWay}" />
+                </TextBlock>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,8"
+                            Visibility="{Binding CanManage, Converter={StaticResource BoolToVis}}">
+                    <Button Content="Редактировать" Click="EditButton_Click" Width="140" Margin="0,0,8,0" />
+                    <Button Content="Удалить" Click="DeleteButton_Click" Width="100" />
+                </StackPanel>
+
+                <TextBlock Text="Ингредиенты" FontSize="18" FontWeight="SemiBold" Margin="0,8,0,4" />
+                <ItemsControl ItemsSource="{Binding Recipe.RecipeIngredients}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="0,2">
+                                <Run Text="{Binding Ingredient.IngredientName, Mode=OneWay}" />
+                                <Run Text=" — " />
+                                <Run Text="{Binding Amount, Mode=OneWay, StringFormat={}{0:0.##}}" />
+                                <Run Text="{Binding Unit, Mode=OneWay}" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Порядок приготовления" FontSize="18" FontWeight="SemiBold"
+                           Margin="0,12,0,4" />
+                <ItemsControl ItemsSource="{Binding Recipe.Steps}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0,2">
+                                <TextBlock Text="{Binding StepNumber, StringFormat={}{0}.}"
+                                            FontWeight="SemiBold" Width="24" />
+                                <TextBlock Text="{Binding Text}" TextWrapping="Wrap" MaxWidth="680" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Button Content="{Binding CookedButtonText}" Command="{Binding ToggleCookedCommand}"
+                        Height="36" HorizontalAlignment="Left" Margin="0,16,0,4"
+                        Visibility="{Binding CanInteract, Converter={StaticResource BoolToVis}}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCookedByMe}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource SuccessBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <TextBlock Text="{Binding AuthHint}" Foreground="Gray" FontStyle="Italic" />
+                <TextBlock Text="{Binding AuthHint}" Foreground="Gray" FontStyle="Italic" />
+
+                <TextBlock Text="Комментарии" FontSize="18" FontWeight="SemiBold" Margin="0,16,0,4" />
+                <ItemsControl ItemsSource="{Binding Recipe.Comments}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="LightGray" BorderThickness="0,0,0,1"
+                                    Padding="0,6" Margin="0,0,0,6">
+                                <StackPanel>
+                                    <TextBlock Foreground="Gray">
+                                        <Run Text="{Binding User.DisplayName, Mode=OneWay}"
+                                             FontWeight="SemiBold" />
+                                        <Run Text="  " />
+                                        <Run Text="{Binding PublicationDate, Mode=OneWay,
+                                               StringFormat={}{0:dd.MM.yyyy HH:mm}}" />
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding CommentText}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBox Text="{Binding CommentText, UpdateSourceTrigger=PropertyChanged}"
+                         Height="60" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,4,0,8"
+                         Visibility="{Binding CanInteract, Converter={StaticResource BoolToVis}}" />
+                <Button Content="Отправить комментарий" Command="{Binding AddCommentCommand}"
+                        Width="200" HorizontalAlignment="Left"
+                        Visibility="{Binding CanInteract, Converter={StaticResource BoolToVis}}" />
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="Crimson"
+                           TextWrapping="Wrap" Margin="0,8,0,0" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
