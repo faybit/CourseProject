@@ -27,9 +27,17 @@
                 </StackPanel>
 
                 <TextBlock Text="Сложность" />
-                <ComboBox ItemsSource="{Binding Difficulties}" DisplayMemberPath="DifficultyName"
+
+
+                <ComboBox ItemsSource="{Binding Difficulties}"
                           SelectedItem="{Binding SelectedDifficulty}" Width="220"
-                          HorizontalAlignment="Left" Margin="0,4,0,12" />
+                          HorizontalAlignment="Left" Margin="0,4,0,12" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DifficultyName}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
                 <TextBlock Text="Категории" />
                 <ScrollViewer Height="110" Margin="0,4,0,12">
